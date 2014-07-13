@@ -28,7 +28,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     // is the deque empty?
     public boolean isEmpty() {
-        return firstCursor == middle - 1 && lastCursor == middle;
+        return lastCursor - firstCursor == 1;
     }
 
     // return the number of items on the deque
@@ -42,11 +42,12 @@ public class Deque<Item> implements Iterable<Item> {
         int curMiddle = curSize / 2;
         int newMiddle = newItems.length / 2;
         int j = 0;
-        for (int i = firstCursor; i < middle + lastCursor; i++) {
+        for (int i = firstCursor; i < lastCursor; i++) {
             newItems[newMiddle - curMiddle + (j++)] = items[i];
         }
         firstCursor = newMiddle - (curSize / 2);
         lastCursor = newMiddle + (curSize / 2) + 1;
+        this.middle = newMiddle;
         items = newItems;
     }
     
@@ -140,7 +141,7 @@ public class Deque<Item> implements Iterable<Item> {
         assert deque.size() == 7;
         assert deque.removeFirst() == 5;
         assert deque.removeFirst() == 4;
-        assert deque.removeFirst() == 5;
+        assert deque.removeFirst() == 3;
         assert deque.size() == 4;
         assert deque.removeLast() == -1;
         assert deque.removeLast() == 0;
@@ -156,6 +157,14 @@ public class Deque<Item> implements Iterable<Item> {
             deque.addFirst(i);
         }
         assert deque.size() == 15;
+        assert deque.removeFirst() == 14;
+        assert deque.removeFirst() == 13;
+        assert deque.removeFirst() == 12;
+        assert deque.size() == 12;        
+        assert deque.removeLast() == 0;
+        assert deque.removeLast() == 1;
+        assert deque.removeLast() == 2;
+        assert deque.size() == 9;
     }
 
     // unit testing
