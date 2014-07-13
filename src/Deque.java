@@ -95,28 +95,27 @@ public class Deque<Item> implements Iterable<Item> {
         return result;
     }
 
-    public class DequeIterator<Item> implements Iterable<Item> {
+    public class DequeIterator<Item> implements Iterator<Item> {
 
         private int i;
+        @Override
         public boolean hasNext() {
-            return i == size();
+            return i < size();
         }
 
+        @Override
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
-            return (Item)items[--i];
+            return (Item)items[firstCursor + (++i)];
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
-        @Override
-        public Iterator<Item> iterator() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
         public DequeIterator(Deque<Item> deque) {
+            i = 0;
             this.deque = deque;
         }
 
@@ -130,7 +129,7 @@ public class Deque<Item> implements Iterable<Item> {
      */
     @Override
     public Iterator<Item> iterator() {
-        return new DequeIterator<Item>(this).iterator();
+        return new DequeIterator<Item>(this);
     }
 
     private static void Test1() {
@@ -182,13 +181,15 @@ public class Deque<Item> implements Iterable<Item> {
         for (int i = 0; i < 5; i++) {
             deque.addFirst(i);
         }
-        for (int i = 1; i > -5; i--) {
+        for (int i = -1; i > -5; i--) {
             deque.addLast(i);
         }
-        assert deque.size() == 11;
-        //Iterable<Integer> dequeIter = deque.iterator();
-        
-        
+        assert deque.size() == 9;
+        int i = 4;
+        for(Integer item: deque) {
+            assert item == i;
+            i--;
+        }
     }
     
     // unit testing
