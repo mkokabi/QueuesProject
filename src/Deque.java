@@ -48,7 +48,7 @@ public class Deque<Item> implements Iterable<Item> {
             j++;
         }
         firstCursor = newMiddle - (curSize / 2) - 1;
-        lastCursor = newMiddle + (curSize / 2) + 1;
+        lastCursor = firstCursor + curSize + 1;
         this.middle = newMiddle;
         items = newItems;
     }
@@ -192,10 +192,19 @@ public class Deque<Item> implements Iterable<Item> {
         }
     }
     
+    private static void Test4() {
+        Deque<Integer> deque = new Deque<Integer>();
+        for (int i = 0; i < 10000; i++) {
+            deque.addFirst(i);
+        }
+        assert deque.size() == 10000;
+    }
+    
     // unit testing
     public static void main(String[] args) {
         Test1();
         Test2();
         Test3();
+        Test4();
     }
 }
