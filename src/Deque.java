@@ -20,7 +20,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     // construct an empty deque
     public Deque() {
-        this.items = (Item[]) new Object[10];
+        this.items = (Item[]) new Object[8];
         this.middle = items.length / 2;
         this.firstCursor = middle - 1;
         this.lastCursor = middle;
@@ -33,19 +33,21 @@ public class Deque<Item> implements Iterable<Item> {
 
     // return the number of items on the deque
     public int size() {
-        return (middle - firstCursor - 1) + (lastCursor - middle);
+        return lastCursor - firstCursor - 1;
     }
 
     private void resize(int newSize) {
         Item[] newItems = (Item[]) new Object[newSize];
-        int curSize = (firstCursor + lastCursor);
-        int curMiddle = curSize / 2;
+        int curSize = size();
+        int curMiddle = size() / 2;
         int newMiddle = newItems.length / 2;
+        int newStartPoint = newMiddle - curMiddle;
         int j = 0;
-        for (int i = firstCursor; i < lastCursor; i++) {
-            newItems[newMiddle - curMiddle + (j++)] = items[i];
+        for (int i = firstCursor + 1; i < lastCursor; i++) {
+            newItems[newStartPoint + j] = items[i];
+            j++;
         }
-        firstCursor = newMiddle - (curSize / 2);
+        firstCursor = newMiddle - (curSize / 2) - 1;
         lastCursor = newMiddle + (curSize / 2) + 1;
         this.middle = newMiddle;
         items = newItems;
@@ -66,6 +68,9 @@ public class Deque<Item> implements Iterable<Item> {
     public void addLast(Item item) {
         if (item == null) {
             throw new NullPointerException();
+        }
+        if (lastCursor == items.length) {
+            resize(2 * items.length);
         }
         items[lastCursor++] = item;
     }
@@ -153,23 +158,43 @@ public class Deque<Item> implements Iterable<Item> {
     
     private static void Test2() {
         Deque<Integer> deque = new Deque<Integer>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 5; i++) {
             deque.addFirst(i);
         }
-        assert deque.size() == 15;
-        assert deque.removeFirst() == 14;
-        assert deque.removeFirst() == 13;
-        assert deque.removeFirst() == 12;
-        assert deque.size() == 12;        
+        assert deque.size() == 5;
         assert deque.removeLast() == 0;
-        assert deque.removeLast() == 1;
-        assert deque.removeLast() == 2;
-        assert deque.size() == 9;
+        for (int i = 0; i > -10; i--) {
+            deque.addLast(i);
+        }
+        assert deque.size() == 14;
+        assert deque.removeFirst() == 4;
+        assert deque.removeFirst() == 3;
+        assert deque.removeFirst() == 2;
+        assert deque.size() == 11;
+        assert deque.removeLast() == -9;
+        assert deque.removeLast() == -8;
+        assert deque.removeLast() == -7;
+        assert deque.size() == 8;
     }
 
+    private static void Test3() {
+        Deque<Integer> deque = new Deque<Integer>();
+        for (int i = 0; i < 5; i++) {
+            deque.addFirst(i);
+        }
+        for (int i = 1; i > -5; i--) {
+            deque.addLast(i);
+        }
+        assert deque.size() == 11;
+        //Iterable<Integer> dequeIter = deque.iterator();
+        
+        
+    }
+    
     // unit testing
     public static void main(String[] args) {
         Test1();
         Test2();
+        Test3();
     }
 }
